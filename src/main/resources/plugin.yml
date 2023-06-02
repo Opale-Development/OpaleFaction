@@ -1,0 +1,11 @@
+name: OpaleFaction
+version: '${project.version}'
+main: fr.opaleuhc.opalefaction.OpaleFaction
+author: Opale
+api-version: 1.19
+description: OpaleFaction
+website: https://opaleuhc.fr
+softdepend:
+  - LuckPerms
+  - DecentHolograms
+  - PlayerNPC
