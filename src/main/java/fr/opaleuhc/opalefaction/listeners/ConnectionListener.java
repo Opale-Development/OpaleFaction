@@ -13,6 +13,7 @@ public class ConnectionListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player p = e.getPlayer();
         ScoreBoardManager.INSTANCE.boards.put(p.getUniqueId(), new FastBoard(p));
+        ScoreBoardManager.INSTANCE.setBoardNumber(p.getUniqueId(), 1);
     }
 
 }

@@ -9,3 +9,12 @@ softdepend:
   - LuckPerms
   - DecentHolograms
   - PlayerNPC
+commands:
+  f:
+    description: Commande principale du plugin
+    aliases:
+      - faction
+      - fac
+      - f
+    permission: opalefaction.faction
+    permission-message: Vous n'avez pas la permission d'utiliser cette commande

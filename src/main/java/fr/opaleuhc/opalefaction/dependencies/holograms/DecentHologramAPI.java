@@ -16,9 +16,11 @@ public class DecentHologramAPI {
 
     public static DecentHologramAPI INSTANCE;
     public ArrayList<BindedHologram> bindedHolograms = new ArrayList<>();
+    private OpaleFaction plugin;
 
-    public DecentHologramAPI() {
+    public DecentHologramAPI(OpaleFaction plugin) {
         INSTANCE = this;
+        this.plugin = plugin;
 
         if (Bukkit.getPluginManager().getPlugin("DecentHolograms") == null) {
             OpaleFaction.INSTANCE.getLogger().warning("DecentHolograms not found, not loading DecentHologramsAPI.");
@@ -56,7 +58,7 @@ public class DecentHologramAPI {
     }
 
     public void bindClock() {
-        Bukkit.getScheduler().runTaskTimerAsynchronously(OpaleFaction.INSTANCE, () -> {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             try {
                 ArrayList<BindedHologram> newBindedHolograms = new ArrayList<>();
                 for (BindedHologram bh : bindedHolograms) {
