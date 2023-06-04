@@ -9,13 +9,15 @@ import fr.opaleuhc.opalefaction.faction.FactionCmd;
 import fr.opaleuhc.opalefaction.faction.FactionManager;
 import fr.opaleuhc.opalefaction.listeners.ConnectionListener;
 import fr.opaleuhc.opalefaction.scoreboard.ScoreBoardManager;
+import fr.opaleuhc.opalefaction.teleportation.TeleportationManager;
+import fr.opaleuhc.opalefaction.teleportation.spawn.SpawnCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OpaleFaction extends JavaPlugin {
 
-    public static final String PREFIX = "§8[§6OpaleFaction§8] §r>> ";
+    public static final String PREFIX = "§r§l>> §r";
     public static OpaleFaction INSTANCE;
     public static String VERSION;
 
@@ -34,6 +36,7 @@ public final class OpaleFaction extends JavaPlugin {
         getLogger().info("Registering managers...");
         new FactionManager(this);
         new ScoreBoardManager();
+        new TeleportationManager(this);
 
         getLogger().info("Registering FastInv...");
 
@@ -44,6 +47,7 @@ public final class OpaleFaction extends JavaPlugin {
 
         getLogger().info("Registering commands...");
         getCommand("f").setExecutor(new FactionCmd());
+        getCommand("spawn").setExecutor(new SpawnCmd());
 
         getLogger().info("Starting tasks...");
         for (Player p : Bukkit.getOnlinePlayers()) {
