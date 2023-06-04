@@ -9,6 +9,7 @@ import fr.opaleuhc.opalefaction.faction.FactionCmd;
 import fr.opaleuhc.opalefaction.faction.FactionManager;
 import fr.opaleuhc.opalefaction.listeners.ConnectionListener;
 import fr.opaleuhc.opalefaction.scoreboard.ScoreBoardManager;
+import fr.opaleuhc.opalefaction.tab.TABManager;
 import fr.opaleuhc.opalefaction.teleportation.TeleportationManager;
 import fr.opaleuhc.opalefaction.teleportation.spawn.SpawnCmd;
 import org.bukkit.Bukkit;
@@ -36,6 +37,7 @@ public final class OpaleFaction extends JavaPlugin {
         getLogger().info("Registering managers...");
         new FactionManager(this);
         new ScoreBoardManager();
+        new TABManager(this);
         new TeleportationManager(this);
 
         getLogger().info("Registering FastInv...");
