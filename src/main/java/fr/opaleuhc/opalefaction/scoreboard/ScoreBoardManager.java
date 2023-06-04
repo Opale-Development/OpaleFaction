@@ -34,7 +34,9 @@ public class ScoreBoardManager {
     }
 
     public String getTPS() {
-        return String.format("%.2f", Bukkit.getTPS()[0]);
+        double tps = Bukkit.getTPS()[0];
+        if (tps > 20.00) tps = 20.00;
+        return String.format("%.2f", tps);
     }
 
     public void setBoardNumber(UUID uuid, int number) {
