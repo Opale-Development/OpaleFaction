@@ -22,7 +22,7 @@ public class ConnectionListener implements Listener {
         TABManager.INSTANCE.tabPlayer(p);
 
         Faction faction = FactionManager.INSTANCE.getFactionOf(p.getUniqueId());
-        String factionName = faction == null ? "?" : faction.getName();
+        String factionName = faction == null ? "N/A" : faction.getName();
         e.setJoinMessage("§7[§a+§7] §6" + factionName + " " + LuckPermsAPI.INSTANCE.getPrefix(p.getUniqueId()) + " " + p.getName() + " " + LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId()));
     }
 
@@ -32,7 +32,7 @@ public class ConnectionListener implements Listener {
         ScoreBoardManager.INSTANCE.boards.remove(p.getUniqueId());
 
         Faction faction = FactionManager.INSTANCE.getFactionOf(p.getUniqueId());
-        String factionName = faction == null ? "?" : faction.getName();
+        String factionName = faction == null ? "N/A" : faction.getName();
         e.setQuitMessage("§7[§c-§7] §6" + factionName + " " + LuckPermsAPI.INSTANCE.getPrefix(p.getUniqueId()) + " " + p.getName() + " " + LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId()));
     }
 
