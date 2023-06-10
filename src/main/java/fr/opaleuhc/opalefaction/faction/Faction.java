@@ -36,6 +36,10 @@ public class Faction {
         return name;
     }
 
+    public String getNameAppliedForPlayer(UUID uuid) {
+        return name + FactionRank.getPublicColorFromRank(members.get(uuid));
+    }
+
     public String getDescription() {
         return description;
     }

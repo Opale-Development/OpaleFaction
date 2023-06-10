@@ -38,6 +38,16 @@ public enum FactionRank {
         return rank.getPower() < rank2.getPower();
     }
 
+    public static String getPublicColorFromRank(FactionRank fr) {
+        return switch (fr) {
+            case CHEF -> "§6";
+            case CO_CHEF -> "§e";
+            case MODERATEUR -> "§5";
+            case MEMBRE -> "§f";
+            default -> "§7";
+        };
+    }
+
     public String getName() {
         return name;
     }

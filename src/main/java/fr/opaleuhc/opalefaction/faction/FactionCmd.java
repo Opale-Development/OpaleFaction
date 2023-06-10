@@ -1,13 +1,19 @@
 package fr.opaleuhc.opalefaction.faction;
 
 import fr.opaleuhc.opalefaction.OpaleFaction;
+import fr.opaleuhc.opalefaction.utils.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class FactionCmd implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class FactionCmd implements CommandExecutor, TabCompleter {
 
     public static final String HELP_MSG = """
             §6--- §eAide /f sous commandes§6 ---
@@ -43,11 +49,42 @@ public class FactionCmd implements CommandExecutor {
                 sender.sendMessage(OpaleFaction.PREFIX + "§c/f create <nom>");
                 return true;
             }
+            if (!StringUtils.isStringValid(args[1])) {
+                sender.sendMessage(OpaleFaction.PREFIX + "§cLe nom de la faction ne peut contenir que des lettres, des chiffres et des _");
+                return true;
+            }
+            if (args[1].length() < 3 || args[1].length() > 16) {
+                sender.sendMessage(OpaleFaction.PREFIX + "§cLe nom de la faction doit contenir entre 3 et 16 caractères");
+                return true;
+            }
             if (FactionManager.INSTANCE.createFaction(p, args[1])) {
                 sender.sendMessage(OpaleFaction.PREFIX + "§aVous avez créé la faction §e" + args[1] + "§a !");
             }
             return true;
         }
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
+        List<String> toReturn = new ArrayList<>();
+        if (args.length == 1) {
+            toReturn.add("help");
+            toReturn.add("create");
+            toReturn.add("invite");
+            toReturn.add("kick");
+            toReturn.add("accept");
+            toReturn.add("deny");
+            toReturn.add("info");
+            toReturn.add("leave");
+            toReturn.add("claim");
+            toReturn.add("unclaim");
+            toReturn.add("unclaimall");
+            toReturn.add("invites");
+            return toReturn;
+        } else if (args.length == 2) {
+
+        }
+        return toReturn;
     }
 }

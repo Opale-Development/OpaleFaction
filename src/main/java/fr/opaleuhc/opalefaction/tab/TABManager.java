@@ -23,8 +23,8 @@ public class TABManager {
         p.setPlayerListHeaderFooter("§3§lOpaleFaction\n§8" + OpaleFaction.VERSION + "\n\n§7En ligne : §a(co fac)§7/§6(co tt)\n",
                 "\n§3play.opaleuhc.fr");
         Faction faction = FactionManager.INSTANCE.getFactionOf(p.getUniqueId());
-        String factionName = faction == null ? "§7N/A" : faction.getName();
-        p.setPlayerListName("§7" + factionName + LuckPermsAPI.INSTANCE.getPrefix(p.getUniqueId()) + " " + p.getName() + " §7" + LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId()));
+        String factionName = faction == null ? "§7N/A" : faction.getNameAppliedForPlayer(p.getUniqueId());
+        p.setPlayerListName("§7" + LuckPermsAPI.INSTANCE.getPrefix(p.getUniqueId()) + " §7" + factionName + " " + p.getName() + " §7" + LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId()));
     }
 
     public void clock() {
