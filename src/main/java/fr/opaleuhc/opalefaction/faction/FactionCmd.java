@@ -1,7 +1,9 @@
 package fr.opaleuhc.opalefaction.faction;
 
 import fr.opaleuhc.opalefaction.OpaleFaction;
+import fr.opaleuhc.opalefaction.faction.claims.ClaimManager;
 import fr.opaleuhc.opalefaction.utils.StringUtils;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -44,22 +46,57 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             sender.sendMessage(OpaleFaction.PREFIX + "§cSeul un joueur peut exécuter cette commande !");
             return true;
         }
+        Faction faction = FactionManager.INSTANCE.getFactionOf(p.getUniqueId());
         if (args[0].equalsIgnoreCase("create")) {
-            if (args.length != 2) {
-                sender.sendMessage(OpaleFaction.PREFIX + "§c/f create <nom>");
+            if (faction != null) {
+                p.sendMessage(OpaleFaction.PREFIX + "§cVous êtes déjà dans une faction !");
                 return true;
             }
-            if (!StringUtils.isStringValid(args[1])) {
-                sender.sendMessage(OpaleFaction.PREFIX + "§cLe nom de la faction ne peut contenir que des lettres, des chiffres et des _");
+            if (args.length == 2) {
+                if (!StringUtils.isStringValid(args[1])) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cLe nom de la faction ne peut contenir que des lettres, des chiffres et des _");
+                    return true;
+                }
+                if (args[1].length() < 3 || args[1].length() > 16) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cLe nom de la faction doit contenir entre 3 et 16 caractères");
+                    return true;
+                }
+                if (FactionManager.INSTANCE.createFaction(p, args[1])) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§aVous avez créé la faction §e" + args[1] + "§a !");
+                }
                 return true;
             }
-            if (args[1].length() < 3 || args[1].length() > 16) {
-                sender.sendMessage(OpaleFaction.PREFIX + "§cLe nom de la faction doit contenir entre 3 et 16 caractères");
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f create <nom>");
+            return true;
+        }
+
+        if (faction == null) {
+            p.sendMessage(OpaleFaction.PREFIX + "§cVous n'êtes pas dans une faction !");
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("claim")) {
+            //perm fac?
+            if (args.length == 1) {
+                Location loc = p.getLocation();
+                if (ClaimManager.INSTANCE.claim(faction, loc, p)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§aClaim effectué avec succès !");
+                }
                 return true;
             }
-            if (FactionManager.INSTANCE.createFaction(p, args[1])) {
-                sender.sendMessage(OpaleFaction.PREFIX + "§aVous avez créé la faction §e" + args[1] + "§a !");
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f claim");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("unclaim")) {
+            //perm fac?
+            if (args.length == 1) {
+                Location loc = p.getLocation();
+                if (ClaimManager.INSTANCE.unclaim(faction, loc, p)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§aUnclaim effectué avec succès !");
+                }
+                return true;
             }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f unclaim");
             return true;
         }
         return true;

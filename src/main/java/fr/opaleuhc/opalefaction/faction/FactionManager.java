@@ -1,6 +1,7 @@
 package fr.opaleuhc.opalefaction.faction;
 
 import fr.opaleuhc.opalefaction.OpaleFaction;
+import fr.opaleuhc.opalefaction.faction.claims.ClaimManager;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -17,6 +18,12 @@ public class FactionManager {
     public FactionManager(OpaleFaction plugin) {
         INSTANCE = this;
         this.plugin = plugin;
+
+        new ClaimManager(this.plugin);
+    }
+
+    public ArrayList<Faction> getFactions() {
+        return factions;
     }
 
     public boolean createFaction(Player p, String name) {
