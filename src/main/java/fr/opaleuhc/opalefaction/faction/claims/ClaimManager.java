@@ -29,6 +29,7 @@ public class ClaimManager {
     }
 
     public boolean claim(Faction faction, Location loc, Player p) {
+        //perm fac?
         final long claim = loc.getChunk().getChunkKey();
         if (faction.getClaims().contains(claim)) {
             p.sendMessage(OpaleFaction.PREFIX + "§cVous avez déjà claim ce chunk !");
@@ -44,6 +45,7 @@ public class ClaimManager {
     }
 
     public boolean unclaim(Faction faction, Location loc, Player p) {
+        //perm fac?
         final long claim = loc.getChunk().getChunkKey();
         if (!faction.getClaims().contains(claim)) {
             p.sendMessage(OpaleFaction.PREFIX + "§cVous n'avez pas claim ce chunk !");
@@ -51,5 +53,16 @@ public class ClaimManager {
         }
         faction.getClaims().remove(claim);
         return true;
+    }
+
+    public boolean unclaimall(Faction faction, Player p) {
+        //perm fac?
+        if (faction.getMembers().containsKey(p.getUniqueId())) {
+            if (faction.getClaims().size() == 0) return false;
+            faction.getClaims().clear();
+            faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §ca unclaim toutes les claims de la faction !");
+            return true;
+        }
+        return false;
     }
 }

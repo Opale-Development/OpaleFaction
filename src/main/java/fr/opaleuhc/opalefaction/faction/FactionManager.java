@@ -12,6 +12,8 @@ public class FactionManager {
 
     public static FactionManager INSTANCE;
     public ArrayList<UUID> disbanding = new ArrayList<>();
+    public ArrayList<UUID> leaving = new ArrayList<>();
+    public ArrayList<UUID> unclaimall = new ArrayList<>();
     private OpaleFaction plugin;
     private ArrayList<Faction> factions = new ArrayList<>();
 
@@ -59,6 +61,15 @@ public class FactionManager {
             return true;
         }
         return false;
+    }
+
+    public void leaveFaction(Faction faction, Player p) {
+        if (factions.contains(faction)) {
+            if (faction.getMembers().containsKey(p.getUniqueId())) {
+                faction.getMembers().remove(p.getUniqueId());
+                faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §ca quitté la faction !");
+            }
+        }
     }
 
     public Faction getFactionByName(String name) {

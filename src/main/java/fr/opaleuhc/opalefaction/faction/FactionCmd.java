@@ -137,6 +137,58 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             p.sendMessage(OpaleFaction.PREFIX + "§c/f unclaim");
             return true;
         }
+        if (args[0].equalsIgnoreCase("unclaimall")) {
+            //perm fac?
+            if (args.length == 1) {
+                if (faction.getClaims().isEmpty()) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVotre faction n'a pas de claims !");
+                    return true;
+                }
+                if (!FactionManager.INSTANCE.unclaimall.contains(p.getUniqueId())) {
+                    FactionManager.INSTANCE.unclaimall.add(p.getUniqueId());
+                    Bukkit.getScheduler().runTaskLater(OpaleFaction.INSTANCE, () -> {
+                        if (FactionManager.INSTANCE.unclaimall.contains(p.getUniqueId())) {
+                            FactionManager.INSTANCE.unclaimall.remove(p.getUniqueId());
+                            p.sendMessage(OpaleFaction.PREFIX + "§cVous n'avez pas confirmé votre action à temps !");
+                        }
+                    }, 20 * 10);
+                    p.sendMessage(OpaleFaction.PREFIX + "§aVous allez unclaim toutes les claims de votre faction ! Pour confirmer, retapez la commande dans les 10 secondes !");
+                    return true;
+                }
+                if (ClaimManager.INSTANCE.unclaimall(faction, p)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§aUnclaim effectué avec succès !");
+                } else {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVous devez avoir des claims pour pouvoir unclaim !");
+                }
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f unclaimall");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("leave")) {
+            if (args.length == 1) {
+                if (faction.getMembers().getOrDefault(p.getUniqueId(), FactionRank.RECRUE).canDelete()) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVous êtes le chef de cette faction ! Vous devez la dissoudre pour la quitter !");
+                    return true;
+                }
+                if (!FactionManager.INSTANCE.leaving.contains(p.getUniqueId())) {
+                    FactionManager.INSTANCE.leaving.add(p.getUniqueId());
+                    Bukkit.getScheduler().runTaskLater(OpaleFaction.INSTANCE, () -> {
+                        if (FactionManager.INSTANCE.leaving.contains(p.getUniqueId())) {
+                            FactionManager.INSTANCE.leaving.remove(p.getUniqueId());
+                            p.sendMessage(OpaleFaction.PREFIX + "§cDélai de confirmation dépassé !");
+                        }
+                    }, 20 * 10);
+                    p.sendMessage(OpaleFaction.PREFIX + "§aÊtes-vous sûr de vouloir quitter votre faction ? Tapez §e/f leave §aà nouveau pour confirmer, vous avez §e10 secondes §a!");
+                    return true;
+                }
+                FactionManager.INSTANCE.leaveFaction(faction, p);
+                p.sendMessage(OpaleFaction.PREFIX + "§aVous avez quitté votre faction !");
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f leave");
+            return true;
+        }
         if (args[0].equalsIgnoreCase("disband")) {
             if (!faction.getMembers().getOrDefault(p.getUniqueId(), FactionRank.RECRUE).canDelete()) {
                 p.sendMessage(OpaleFaction.PREFIX + "§cVous n'êtes pas le chef de cette faction !");
