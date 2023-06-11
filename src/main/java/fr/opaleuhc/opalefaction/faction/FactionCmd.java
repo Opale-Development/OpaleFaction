@@ -3,6 +3,7 @@ package fr.opaleuhc.opalefaction.faction;
 import fr.opaleuhc.opalefaction.OpaleFaction;
 import fr.opaleuhc.opalefaction.faction.claims.ClaimManager;
 import fr.opaleuhc.opalefaction.utils.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -69,6 +70,18 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             p.sendMessage(OpaleFaction.PREFIX + "§c/f create <nom>");
             return true;
         }
+        if (args[0].equalsIgnoreCase("info")) {
+            if (args.length == 2) {
+                Faction f = FactionManager.INSTANCE.getFactionByName(args[1]);
+                if (f == null) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cCette faction n'existe pas !");
+                    return true;
+                }
+                p.sendMessage(f.getFactionInfo());
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f info <faction>");
+        }
 
         if (faction == null) {
             p.sendMessage(OpaleFaction.PREFIX + "§cVous n'êtes pas dans une faction !");
@@ -99,6 +112,34 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             p.sendMessage(OpaleFaction.PREFIX + "§c/f unclaim");
             return true;
         }
+        if (args[0].equalsIgnoreCase("disband")) {
+            if (!faction.getMembers().getOrDefault(p.getUniqueId(), FactionRank.RECRUE).canDelete()) {
+                p.sendMessage(OpaleFaction.PREFIX + "§cVous n'êtes pas le chef de cette faction !");
+                return true;
+            }
+            if (args.length == 1) {
+                if (!FactionManager.INSTANCE.disbanding.contains(p.getUniqueId())) {
+                    FactionManager.INSTANCE.disbanding.add(p.getUniqueId());
+                    Bukkit.getScheduler().runTaskLater(OpaleFaction.INSTANCE, () -> {
+                        if (FactionManager.INSTANCE.disbanding.contains(p.getUniqueId())) {
+                            FactionManager.INSTANCE.disbanding.remove(p.getUniqueId());
+                            p.sendMessage(OpaleFaction.PREFIX + "§cVous n'avez pas confirmé la dissolution de votre faction !");
+                        }
+                    }, 20 * 10);
+                    p.sendMessage(OpaleFaction.PREFIX + "§cMerci de confirmer la dissolution de votre faction avec §e/f disband§c une seconde fois, vous avez §e10 secondes§c.");
+                    return true;
+                }
+                if (FactionManager.INSTANCE.disbandFaction(faction)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§aVous avez dissous votre faction !");
+                } else {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cUne erreur est survenue !");
+                }
+                FactionManager.INSTANCE.disbanding.remove(p.getUniqueId());
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f disband");
+            return true;
+        }
         return true;
     }
 
@@ -118,6 +159,9 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             toReturn.add("unclaim");
             toReturn.add("unclaimall");
             toReturn.add("invites");
+            toReturn.add("sethome");
+            toReturn.add("home");
+            toReturn.add("disband");
             return toReturn;
         } else if (args.length == 2) {
 

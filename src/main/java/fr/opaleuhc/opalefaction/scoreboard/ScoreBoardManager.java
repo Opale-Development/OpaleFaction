@@ -5,11 +5,13 @@ import fr.opaleuhc.opalefaction.OpaleFaction;
 import fr.opaleuhc.opalefaction.dependencies.luckperms.LuckPermsAPI;
 import fr.opaleuhc.opalefaction.faction.Faction;
 import fr.opaleuhc.opalefaction.faction.FactionManager;
+import fr.opaleuhc.opalefaction.utils.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ScoreBoardManager {
 
@@ -25,12 +27,6 @@ public class ScoreBoardManager {
                 updateBoard(board);
             }
         }, 0, 20);
-    }
-
-    public String getDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
-        return sdf.format(new Date());
     }
 
     public String getTPS() {
@@ -53,6 +49,8 @@ public class ScoreBoardManager {
 
         final int number = getBoardNumber(player.getUniqueId());
 
+        final String time = DateUtils.getTimeFormatted();
+
         if (number == 0) {
             board.updateTitle("§3§lOpaleFaction");
             board.updateLines("§8" + OpaleFaction.VERSION,
@@ -60,7 +58,7 @@ public class ScoreBoardManager {
                     "§cErreur interne",
                     "§cCode 0 (quitté)",
                     "",
-                    "§7" + getDate() + " §f| §7" + getTPS(),
+                    "§7" + time + " §f| §7" + getTPS(),
                     "",
                     "§3mc.opaleuhc.fr"
             );
@@ -80,7 +78,7 @@ public class ScoreBoardManager {
                         "§f• Points : §a???",
                         "§f• Classement : §a???",
                         "",
-                        "§7" + getDate() + " §f| §7" + getTPS(),
+                        "§7" + time + " §f| §7" + getTPS(),
                         "",
                         "§3mc.opaleuhc.fr"
                 );
@@ -94,7 +92,7 @@ public class ScoreBoardManager {
                     "",
                     "...",
                     "",
-                    "§7" + getDate() + " §f| §7" + getTPS(),
+                    "§7" + time + " §f| §7" + getTPS(),
                     "",
                     "§3mc.opaleuhc.fr"
             );

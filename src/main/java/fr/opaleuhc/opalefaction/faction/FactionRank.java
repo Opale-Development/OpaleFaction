@@ -48,6 +48,10 @@ public enum FactionRank {
         };
     }
 
+    public boolean canDelete() {
+        return this == CHEF;
+    }
+
     public String getName() {
         return name;
     }

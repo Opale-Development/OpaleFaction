@@ -1,6 +1,8 @@
 package fr.opaleuhc.opalefaction.faction;
 
+import fr.opaleuhc.opalefaction.utils.DateUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +40,25 @@ public class Faction {
 
     public String getNameAppliedForPlayer(UUID uuid) {
         return name + FactionRank.getPublicColorFromRank(members.get(uuid));
+    }
+
+    public void sendMessageToAllMembers(String message) {
+        for (UUID uuid : members.keySet()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.sendMessage(message);
+            }
+        }
+    }
+
+    public String getFactionInfo() {
+        return "§6--- §eInformations de la faction §7" + name + "§6 ---\n" +
+                "§eDescription : §f" + description + "\n" +
+                "§eMembres : §f" + getOnlineMembers() + "/" + members.size() + "\n" +
+                "§eClaims : §f" + claims.size() + "\n" +
+                "§eAlliés : §f" + allies.size() + "\n" +
+                "§eEnnemis : §f" + enemies.size() + "\n" +
+                "§eDate de création : §f" + DateUtils.getDateTimeFormatted(creationDate);
     }
 
     public String getDescription() {
