@@ -24,7 +24,8 @@ public class TABManager {
                 "\n§3play.opaleuhc.fr");
         Faction faction = FactionManager.INSTANCE.getFactionOf(p.getUniqueId());
         String factionName = faction == null ? "§7N/A" : faction.getNameAppliedForPlayer(p.getUniqueId());
-        p.setPlayerListName("§7" + LuckPermsAPI.INSTANCE.getPrefix(p.getUniqueId()) + " §7" + factionName + " " + p.getName() + " §7" + LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId()));
+        String suffix = LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId());
+        p.setPlayerListName("§7" + LuckPermsAPI.INSTANCE.getPrefix(p.getUniqueId()) + " §7" + factionName + " " + p.getName() + (suffix.length()>0 ? " §7" + LuckPermsAPI.INSTANCE.getSuffix(p.getUniqueId()) : ""));
     }
 
     public void clock() {
