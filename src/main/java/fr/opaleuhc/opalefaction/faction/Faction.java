@@ -2,6 +2,7 @@ package fr.opaleuhc.opalefaction.faction;
 
 import fr.opaleuhc.opalefaction.utils.DateUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -18,8 +19,10 @@ public class Faction {
     private long creationDate;
     private HashMap<UUID, Long> allies;
     private HashMap<UUID, Long> enemies;
+    private Location home;
 
-    public Faction(UUID uuid, String name, String description, HashMap<UUID, FactionRank> members, ArrayList<Long> claims, long creationDate, HashMap<UUID, Long> allies, HashMap<UUID, Long> enemies) {
+    public Faction(UUID uuid, String name, String description, HashMap<UUID, FactionRank> members, ArrayList<Long> claims, long creationDate,
+                   HashMap<UUID, Long> allies, HashMap<UUID, Long> enemies, Location home) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
@@ -28,6 +31,7 @@ public class Faction {
         this.creationDate = creationDate;
         this.allies = allies;
         this.enemies = enemies;
+        this.home = home;
     }
 
     public UUID getUuid() {
@@ -93,5 +97,13 @@ public class Faction {
             }
         }
         return i;
+    }
+
+    public Location getHome() {
+        return home;
+    }
+
+    public void setHome(Location home) {
+        this.home = home;
     }
 }

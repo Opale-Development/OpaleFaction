@@ -2,6 +2,7 @@ package fr.opaleuhc.opalefaction.faction;
 
 import fr.opaleuhc.opalefaction.OpaleFaction;
 import fr.opaleuhc.opalefaction.faction.claims.ClaimManager;
+import fr.opaleuhc.opalefaction.teleportation.TeleportationManager;
 import fr.opaleuhc.opalefaction.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -88,6 +89,30 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("home")) {
+            //perm fac?
+            if (args.length == 1) {
+                if (faction.getHome() == null) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cLe home de votre faction n'a pas été défini !");
+                    return true;
+                }
+                TeleportationManager.INSTANCE.teleportToLocation(p, faction.getHome(), "f home", false);
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f home");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("sethome")) {
+            //perm fac?
+            if (args.length == 1) {
+                Location loc = p.getLocation();
+                faction.setHome(loc);
+                p.sendMessage(OpaleFaction.PREFIX + "§aVous avez défini le home de votre faction !");
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f sethome");
+            return true;
+        }
         if (args[0].equalsIgnoreCase("claim")) {
             //perm fac?
             if (args.length == 1) {

@@ -36,7 +36,7 @@ public class FactionManager {
             return false;
         }
         Faction faction = new Faction(UUID.randomUUID(), name, "", new HashMap<>(), new ArrayList<>(), System.currentTimeMillis(), new HashMap<>(),
-                new HashMap<>());
+                new HashMap<>(), null);
         faction.getMembers().put(p.getUniqueId(), FactionRank.CHEF);
         factions.add(faction);
         return true;

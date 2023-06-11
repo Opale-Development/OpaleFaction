@@ -58,6 +58,42 @@ public class TeleportationManager {
         p.sendActionBar(Component.text(OpaleFaction.PREFIX + "§aTéléportation au spawn §a§l✓"));
     }
 
+    public void teleportToLocation(Player p, Location to, String locationName, boolean force) {
+        if (force) {
+            launchTeleportationTo(p, to, true);
+            return;
+        }
+        final int delay = getTeleportationDelay(p);
+        if (delay == 0) {
+            launchTeleportationTo(p, to, false);
+            return;
+        }
+        AtomicInteger elapsed = new AtomicInteger();
+        plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, (task) -> {
+            if (p.isOnline()) {
+                p.sendActionBar(Component.text(OpaleFaction.PREFIX + "§6Téléportation à §e" + locationName + "§6 dans §e" + (delay - elapsed.get()) + " seconde" +
+                        (delay - elapsed.get() > 1 ? "s" : "") + "§6..."));
+                if (elapsed.get() >= delay) {
+                    launchTeleportationTo(p, to, false);
+                    task.cancel();
+                }
+            } else task.cancel();
+            elapsed.getAndIncrement();
+        }, 0, 20L);
+    }
+
+    public void launchTeleportationTo(Player p, Location to, boolean force) {
+        if (force) {
+            p.sendActionBar(Component.text(OpaleFaction.PREFIX + "§6Téléportation de force..."));
+            p.teleportAsync(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
+            p.sendActionBar(Component.text(OpaleFaction.PREFIX + "§aTéléportation de force §a§l✓"));
+            return;
+        }
+        p.sendActionBar(Component.text(OpaleFaction.PREFIX + "§6Téléportation..."));
+        p.teleportAsync(to, PlayerTeleportEvent.TeleportCause.PLUGIN);
+        p.sendActionBar(Component.text(OpaleFaction.PREFIX + "§aTéléportation §a§l✓"));
+    }
+
     public int getTeleportationDelay(Player p) {
         if (p.hasPermission("opalefaction.spawn.0")) return 0;
         if (p.hasPermission("opalefaction.spawn.1")) return 1;
