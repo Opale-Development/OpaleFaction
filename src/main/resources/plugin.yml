@@ -22,3 +22,9 @@ commands:
     description: Commande pour se téléporter au spawn
     permission: opalefaction.spawn
     permission-message: Vous n'avez pas la permission d'utiliser cette commande
+  shop:
+    description: Commande pour ouvrir le shop
+    permission: opalefaction.shop
+    permission-message: Vous n'avez pas la permission d'utiliser cette commande
+    aliases:
+      - shop

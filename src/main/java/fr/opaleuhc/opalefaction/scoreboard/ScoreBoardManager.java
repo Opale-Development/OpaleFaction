@@ -19,10 +19,10 @@ public class ScoreBoardManager {
     public Map<UUID, FastBoard> boards = new HashMap<>();
     public Map<UUID, Integer> numbers = new HashMap<>();
 
-    public ScoreBoardManager() {
+    public ScoreBoardManager(OpaleFaction plugin) {
         INSTANCE = this;
 
-        OpaleFaction.INSTANCE.getServer().getScheduler().runTaskTimerAsynchronously(OpaleFaction.INSTANCE, () -> {
+        OpaleFaction.INSTANCE.getServer().getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             for (FastBoard board : this.boards.values()) {
                 updateBoard(board);
             }
