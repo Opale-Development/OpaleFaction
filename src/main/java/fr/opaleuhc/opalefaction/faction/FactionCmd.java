@@ -289,11 +289,14 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 faction.removeMember(uuid);
-                p.sendMessage(OpaleFaction.PREFIX + "§aVous avez kick §e" + faction.getMembersName().getOrDefault(uuid, "§cInconnu") + " §ade votre faction !");
+
+                //INTEGRATION API
+
+                //p.sendMessage(OpaleFaction.PREFIX + "§aVous avez kick §e" + faction.getMembersName().getOrDefault(uuid, "§cInconnu") + " §ade votre faction !");
                 Player target = Bukkit.getPlayer(uuid);
                 if (target != null)
                     target.sendMessage(OpaleFaction.PREFIX + "§cVous avez été kick de la faction §e" + faction.getName() + " §c!");
-                faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §aa kick §e" + faction.getMembersName().getOrDefault(uuid, "§cInconnu") + " §ade la faction !");
+                //faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §aa kick §e" + faction.getMembersName().getOrDefault(uuid, "§cInconnu") + " §ade la faction !");
                 return true;
             }
         }

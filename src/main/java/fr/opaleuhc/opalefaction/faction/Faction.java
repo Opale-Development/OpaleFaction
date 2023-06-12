@@ -15,7 +15,6 @@ public class Faction {
     private String name;
     private String description;
     private HashMap<UUID, FactionRank> members;
-    private HashMap<UUID, String> membersName;
     private ArrayList<Long> claims;
     private long creationDate;
     private HashMap<UUID, Long> allies;
@@ -24,13 +23,12 @@ public class Faction {
     private HashMap<UUID, Long> invitations = new HashMap<>(); // NE PAS STOCKER
     private HashMap<UUID, String> invitationsName = new HashMap<>(); // NE PAS STOCKER
 
-    public Faction(UUID uuid, String name, String description, HashMap<UUID, FactionRank> members, HashMap<UUID, String> membersName,
+    public Faction(UUID uuid, String name, String description, HashMap<UUID, FactionRank> members,
                    ArrayList<Long> claims, long creationDate, HashMap<UUID, Long> allies, HashMap<UUID, Long> enemies, Location home) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.members = members;
-        this.membersName = membersName;
         this.claims = claims;
         this.creationDate = creationDate;
         this.allies = allies;
@@ -125,19 +123,13 @@ public class Faction {
 
     public void addMember(UUID uuid, String name) {
         members.put(uuid, FactionRank.RECRUE);
-        membersName.put(uuid, name);
     }
 
     public void removeMember(UUID uuid) {
         members.remove(uuid);
-        membersName.remove(uuid);
     }
 
     public HashMap<UUID, String> getInvitationsName() {
         return invitationsName;
-    }
-
-    public HashMap<UUID, String> getMembersName() {
-        return membersName;
     }
 }

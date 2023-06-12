@@ -40,7 +40,7 @@ public class FactionManager {
             p.sendMessage(OpaleFaction.PREFIX + "§cVous êtes déjà dans une faction !");
             return false;
         }
-        Faction faction = new Faction(UUID.randomUUID(), name, "", new HashMap<>(), new HashMap<>(), new ArrayList<>(), System.currentTimeMillis(), new HashMap<>(),
+        Faction faction = new Faction(UUID.randomUUID(), name, "", new HashMap<>(), new ArrayList<>(), System.currentTimeMillis(), new HashMap<>(),
                 new HashMap<>(), null);
         faction.getMembers().put(p.getUniqueId(), FactionRank.CHEF);
         factions.add(faction);
