@@ -4,8 +4,11 @@ import fr.opaleuhc.opalefaction.OpaleFaction;
 import fr.opaleuhc.opalefaction.faction.claims.ClaimManager;
 import fr.opaleuhc.opalefaction.teleportation.TeleportationManager;
 import fr.opaleuhc.opalefaction.utils.StringUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FactionCmd implements CommandExecutor, TabCompleter {
 
@@ -164,6 +168,133 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             }
             p.sendMessage(OpaleFaction.PREFIX + "§c/f unclaimall");
             return true;
+        }
+        if (args[0].equalsIgnoreCase("invite")) {
+            //perm fac?
+            if (args.length == 2) {
+                Player target = Bukkit.getPlayer(args[1]);
+                if (target == null) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur n'est pas connecté ou n'existe pas !");
+                    return true;
+                }
+                if (target.equals(p)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVous ne pouvez pas vous inviter vous-même !");
+                    return true;
+                }
+                if (faction.getMembers().containsKey(target.getUniqueId())) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur est déjà dans votre faction !");
+                    return true;
+                }
+                if (faction.getInvitations().containsKey(target.getUniqueId())) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur a déjà une invitation en attente !");
+                    return true;
+                }
+                faction.addInvitation(target.getUniqueId());
+                p.sendMessage(OpaleFaction.PREFIX + "§aVous avez invité §e" + target.getName() + " §aà rejoindre votre faction !");
+                Component message = Component.text(OpaleFaction.PREFIX + "§e" + p.getName() + " §avous a invité à rejoindre sa faction !");
+                Component accept = Component.text("§a[ACCEPTER").clickEvent(ClickEvent.runCommand("/f accept " + faction.getName()));
+                Component deny = Component.text("§c[REFUSER]").clickEvent(ClickEvent.runCommand("/f deny " + faction.getName()));
+                target.sendMessage(message.append(accept).append(Component.text(" §a/ ").append(deny)));
+                faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §aa invité §e" + target.getName() + " §aà rejoindre la faction !");
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f invite <joueur>");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("invites")) {
+            //perm fac?
+            if (args.length == 1) {
+                if (faction.getInvitations().isEmpty()) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVotre faction n'a aucune invitation en attente !");
+                    return true;
+                }
+                p.sendMessage(OpaleFaction.PREFIX + "§aListe des invitations en attente :");
+                for (UUID uuid : faction.getInvitations().keySet()) {
+                    Component rm = Component.text("§a[SUPPRIMER LA DEMANDE]").clickEvent(ClickEvent.runCommand("/f rminvite " + uuid));
+                    Component text = Component.text("§e- " + faction.getInvitationsName().getOrDefault(uuid, "§cInconnu"));
+                    p.sendMessage(text.append(Component.text(" ").append(rm)));
+                }
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f invites");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("rminvite")) {
+            //perm fac?
+            if (args.length == 2) {
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(args[1]);
+                } catch (Exception e) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cErreur interne !");
+                    return true;
+                }
+                if (!faction.getInvitations().containsKey(uuid)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur n'a pas d'invitation en attente !");
+                    return true;
+                }
+                faction.removeInvitation(uuid);
+                p.sendMessage(OpaleFaction.PREFIX + "§aVous avez supprimé l'invitation de §e" + faction.getInvitationsName().getOrDefault(uuid, "§cInconnu") + " §a!");
+                Player target = Bukkit.getPlayer(uuid);
+                if (target != null) {
+                    target.sendMessage(OpaleFaction.PREFIX + "§cVotre invitation à rejoindre la faction §e" + faction.getName() + " §ca été supprimée !");
+                }
+                return true;
+            }
+            p.sendMessage(OpaleFaction.PREFIX + "§c/f rminvite <joueur>");
+            return true;
+        }
+        if (args[0].equalsIgnoreCase("kick")) {
+            //perm fac?
+            if (args.length == 2) {
+                UUID uuid;
+                try {
+                    uuid = UUID.fromString(args[1]);
+                } catch (Exception e) {
+                    OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
+                    if (target.getPlayer() == null) {
+                        p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur n'est pas connecté ou n'existe pas !");
+                        return true;
+                    }
+                    if (target.equals(p)) {
+                        p.sendMessage(OpaleFaction.PREFIX + "§cVous ne pouvez pas vous kick vous-même !");
+                        return true;
+                    }
+                    if (!faction.getMembers().containsKey(target.getUniqueId())) {
+                        p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur n'est pas dans votre faction !");
+                        return true;
+                    }
+                    if (FactionRank.isHigher(faction.getMembers().get(p.getUniqueId()), faction.getMembers().get(target.getUniqueId()))) {
+                        p.sendMessage(OpaleFaction.PREFIX + "§cVous ne pouvez pas kick ce joueur !");
+                        return true;
+                    }
+                    faction.removeMember(target.getUniqueId());
+                    p.sendMessage(OpaleFaction.PREFIX + "§aVous avez kick §e" + target.getName() + " §ade votre faction !");
+                    if (target.getPlayer() != null)
+                        target.getPlayer().sendMessage(OpaleFaction.PREFIX + "§cVous avez été kick de la faction §e" + faction.getName() + " §c!");
+                    faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §aa kick §e" + target.getName() + " §ade la faction !");
+                    return true;
+                }
+                if (!faction.getMembers().containsKey(uuid)) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cCe joueur n'est pas dans votre faction !");
+                    return true;
+                }
+                if (uuid.equals(p.getUniqueId())) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVous ne pouvez pas vous kick vous-même !");
+                    return true;
+                }
+                if (FactionRank.isHigher(faction.getMembers().get(p.getUniqueId()), faction.getMembers().get(uuid))) {
+                    p.sendMessage(OpaleFaction.PREFIX + "§cVous ne pouvez pas kick ce joueur !");
+                    return true;
+                }
+                faction.removeMember(uuid);
+                p.sendMessage(OpaleFaction.PREFIX + "§aVous avez kick §e" + faction.getMembersName().getOrDefault(uuid, "§cInconnu") + " §ade votre faction !");
+                Player target = Bukkit.getPlayer(uuid);
+                if (target != null)
+                    target.sendMessage(OpaleFaction.PREFIX + "§cVous avez été kick de la faction §e" + faction.getName() + " §c!");
+                faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §aa kick §e" + faction.getMembersName().getOrDefault(uuid, "§cInconnu") + " §ade la faction !");
+                return true;
+            }
         }
         if (args[0].equalsIgnoreCase("leave")) {
             if (args.length == 1) {

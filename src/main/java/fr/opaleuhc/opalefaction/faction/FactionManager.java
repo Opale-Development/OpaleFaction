@@ -2,6 +2,7 @@ package fr.opaleuhc.opalefaction.faction;
 
 import fr.opaleuhc.opalefaction.OpaleFaction;
 import fr.opaleuhc.opalefaction.faction.claims.ClaimManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,6 +23,8 @@ public class FactionManager {
         this.plugin = plugin;
 
         new ClaimManager(this.plugin);
+
+        invitationExpireCheck();
     }
 
     public ArrayList<Faction> getFactions() {
@@ -37,7 +40,7 @@ public class FactionManager {
             p.sendMessage(OpaleFaction.PREFIX + "§cVous êtes déjà dans une faction !");
             return false;
         }
-        Faction faction = new Faction(UUID.randomUUID(), name, "", new HashMap<>(), new ArrayList<>(), System.currentTimeMillis(), new HashMap<>(),
+        Faction faction = new Faction(UUID.randomUUID(), name, "", new HashMap<>(), new HashMap<>(), new ArrayList<>(), System.currentTimeMillis(), new HashMap<>(),
                 new HashMap<>(), null);
         faction.getMembers().put(p.getUniqueId(), FactionRank.CHEF);
         factions.add(faction);
@@ -70,6 +73,19 @@ public class FactionManager {
                 faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + p.getName() + " §ca quitté la faction !");
             }
         }
+    }
+
+    public void invitationExpireCheck() {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            for (Faction faction : factions) {
+                for (UUID uuid : faction.getInvitations().keySet()) {
+                    if (System.currentTimeMillis() - faction.getInvitations().get(uuid) >= 1000 * 30) {
+                        faction.getInvitations().remove(uuid);
+                        faction.sendMessageToAllMembers(OpaleFaction.PREFIX + "§e" + faction.getInvitationsName().getOrDefault(uuid, "?") + " §cn'a pas répondu à l'invitation !");
+                    }
+                }
+            }
+        }, 0, 20L * 2);
     }
 
     public Faction getFactionByName(String name) {
