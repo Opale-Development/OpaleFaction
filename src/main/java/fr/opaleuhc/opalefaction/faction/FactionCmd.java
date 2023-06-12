@@ -30,6 +30,7 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             §c- §ekick <joueur> : §7Permet d'expulser un joueur de votre faction
             §c- §eaccept : §7Permet d'accepter une invitation
             §c- §edeny : §7Permet de refuser une invitation
+            §c- §erminvite : §7Permet de retirer une invitation envoyée à un joueur
             §c- §einfo : §7Permet d'afficher les informations de votre faction
             §c- §eleave : §7Permet de quitter votre faction
             §c- §eclaim : §7Permet de claim un chunk
