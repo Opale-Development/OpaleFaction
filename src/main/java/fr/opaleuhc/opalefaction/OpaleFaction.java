@@ -15,6 +15,10 @@ import fr.opaleuhc.opalefaction.shop.ShopGUIManager;
 import fr.opaleuhc.opalefaction.tab.TABManager;
 import fr.opaleuhc.opalefaction.teleportation.TeleportationManager;
 import fr.opaleuhc.opalefaction.teleportation.spawn.SpawnCmd;
+import fr.opaleuhc.opalefaction.users.FactionUserManager;
+import fr.opaleuhc.opalefaction.users.eco.BaltopCmd;
+import fr.opaleuhc.opalefaction.users.eco.MoneyCmd;
+import fr.opaleuhc.opalefaction.users.eco.PayCmd;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,6 +42,7 @@ public final class OpaleFaction extends JavaPlugin {
         new FAWEAPI(this);
 
         getLogger().info("Registering managers...");
+        new FactionUserManager(this);
         new FactionManager(this);
         new ScoreBoardManager(this);
         new TABManager(this);
@@ -56,9 +61,13 @@ public final class OpaleFaction extends JavaPlugin {
         getCommand("f").setExecutor(new FactionCmd());
         getCommand("spawn").setExecutor(new SpawnCmd());
         getCommand("shop").setExecutor(new ShopGUICmd());
+        getCommand("money").setExecutor(new MoneyCmd());
+        getCommand("baltop").setExecutor(new BaltopCmd());
+        getCommand("pay").setExecutor(new PayCmd());
 
         getLogger().info("Starting tasks...");
         for (Player p : Bukkit.getOnlinePlayers()) {
+            FactionUserManager.INSTANCE.checkForFactionUser(p.getUniqueId(), p.getName());
             ScoreBoardManager.INSTANCE.boards.put(p.getUniqueId(), new FastBoard(p));
             ScoreBoardManager.INSTANCE.setBoardNumber(p.getUniqueId(), 1);
         }

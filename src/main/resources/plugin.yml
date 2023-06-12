@@ -28,3 +28,22 @@ commands:
     permission-message: Vous n'avez pas la permission d'utiliser cette commande
     aliases:
       - shop
+  money:
+    description: Commande pour voir son argent
+    permission: opalefaction.money
+    permission-message: Vous n'avez pas la permission d'utiliser cette commande
+    aliases:
+      - argent
+      - balance
+  pay:
+    description: Commande pour payer un joueur
+    permission: opalefaction.pay
+    permission-message: Vous n'avez pas la permission d'utiliser cette commande
+  baltop:
+    description: Commande pour voir le top des joueurs les plus riches
+    permission: opalefaction.baltop
+    permission-message: Vous n'avez pas la permission d'utiliser cette commande
+    aliases:
+      - topmoney
+      - balancetop
+      - bt
