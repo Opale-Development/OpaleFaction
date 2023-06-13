@@ -5,10 +5,13 @@ import fr.opaleuhc.opalefaction.OpaleFaction;
 import fr.opaleuhc.opalefaction.dependencies.luckperms.LuckPermsAPI;
 import fr.opaleuhc.opalefaction.faction.Faction;
 import fr.opaleuhc.opalefaction.faction.FactionManager;
+import fr.opaleuhc.opalefaction.users.FactionUser;
+import fr.opaleuhc.opalefaction.users.FactionUserManager;
 import fr.opaleuhc.opalefaction.utils.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -46,10 +49,27 @@ public class ScoreBoardManager {
 
     public void updateBoard(FastBoard board) {
         Player player = board.getPlayer();
+        FactionUser factionUser = FactionUserManager.INSTANCE.getFactionUser(player.getUniqueId());
+
+        final String time = DateUtils.getTimeFormatted();
+
+        if (factionUser == null) {
+            board.updateTitle("§3§lOpaleFaction");
+            board.updateLines("§8" + OpaleFaction.VERSION,
+                    "",
+                    "§cErreur interne",
+                    "§cCode 8 (acc not found)",
+                    "",
+                    "§7" + time + " §f| §7" + getTPS(),
+                    "",
+                    "§3mc.opaleuhc.fr"
+            );
+            return;
+        }
 
         final int number = getBoardNumber(player.getUniqueId());
 
-        final String time = DateUtils.getTimeFormatted();
+        final String money = NumberFormat.getInstance().format(factionUser.getMoney());
 
         if (number == 0) {
             board.updateTitle("§3§lOpaleFaction");
@@ -70,7 +90,7 @@ public class ScoreBoardManager {
                         "",
                         "§3" + player.getName(),
                         "§f• Grade : §7" + LuckPermsAPI.INSTANCE.getPrefix(player.getUniqueId()),
-                        "§f• Argent : " + "§a???$",
+                        "§f• Argent : " + "§a" + money + "§7$",
                         "",
                         "§6" + faction.getName(),
                         "§f• Membres : §a" + faction.getOnlineMembers() + "§7/§e" + faction.getMembers().size(),
@@ -88,9 +108,9 @@ public class ScoreBoardManager {
                     "",
                     "§3" + player.getName(),
                     "§f• Grade : §7" + LuckPermsAPI.INSTANCE.getPrefix(player.getUniqueId()),
-                    "§f• Argent : " + "§7",
+                    "§f• Argent : §a" + money + "§7$",
                     "",
-                    "...",
+                    "§6Pas de faction",
                     "",
                     "§7" + time + " §f| §7" + getTPS(),
                     "",

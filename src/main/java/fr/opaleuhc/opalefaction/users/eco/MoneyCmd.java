@@ -112,7 +112,8 @@ public class MoneyCmd implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
         if (args.length == 1) {
             for (FactionUser user : FactionUserManager.INSTANCE.getFactionUsers()) {
-                completions.add(user.getName());
+                if (sender.getName().equals(user.getName())) continue;
+                if (user.getName().toLowerCase().startsWith(args[0].toLowerCase())) completions.add(user.getName());
             }
         }
         if (!sender.hasPermission("opalefaction.admin")) {
