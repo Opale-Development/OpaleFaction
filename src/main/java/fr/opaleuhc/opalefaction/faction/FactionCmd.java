@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class FactionCmd implements CommandExecutor, TabCompleter {
@@ -359,6 +360,7 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String s, @NotNull String[] args) {
         List<String> toReturn = new ArrayList<>();
         if (args.length == 1) {
+            //perm fac?
             toReturn.add("help");
             toReturn.add("create");
             toReturn.add("invite");
@@ -376,7 +378,28 @@ public class FactionCmd implements CommandExecutor, TabCompleter {
             toReturn.add("disband");
             return toReturn;
         } else if (args.length == 2) {
-
+            if (!(sender instanceof Player p)) return toReturn;
+            Faction faction = FactionManager.INSTANCE.getFactionOf(p.getUniqueId());
+            if (faction == null) return toReturn;
+            if (args[0].equalsIgnoreCase("kick")) {
+                for (Map.Entry<UUID, FactionRank> entry : faction.getMembers().entrySet()) {
+                    if (FactionRank.isHigher(faction.getMembers().get(p.getUniqueId()), entry.getValue())) {
+                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(entry.getKey());
+                        if (offlinePlayer.getName() != null) toReturn.add(offlinePlayer.getName());
+                    }
+                }
+                return toReturn;
+            }
+            if (args[0].equalsIgnoreCase("invite")) {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    if (FactionManager.INSTANCE.getFactionOf(player.getUniqueId()) == null) {
+                        toReturn.add(player.getName());
+                    }
+                }
+                return toReturn;
+            }
+            if (args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("deny"))
+                return FactionManager.INSTANCE.getFactionThatInvitedPlayer(p.getUniqueId());
         }
         return toReturn;
     }

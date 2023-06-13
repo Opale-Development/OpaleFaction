@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class FactionManager {
@@ -108,5 +109,15 @@ public class FactionManager {
 
     public boolean isInAFaction(UUID uuid) {
         return getFactionOf(uuid) != null;
+    }
+
+    public List<String> getFactionThatInvitedPlayer(UUID uuid) {
+        List<String> toReturn = new ArrayList<>();
+        for (Faction faction : factions) {
+            if (faction.getInvitations().containsKey(uuid)) {
+                toReturn.add(faction.getName());
+            }
+        }
+        return toReturn;
     }
 }
